@@ -8,7 +8,7 @@ export SUBJECTS_DIR=$TUTORIAL_DIR/freesurfer/subjects  #location of freesurfer f
 for id in 1001 #$(seq -w 1001 1010)
 do
     echo "working on s$id"
-    #recon-all -subjid s$id -localGI
+    recon-all -subjid s$id -localGI
     cd ${SUBJECTS_DIR}/s${id}/surf
     mri_surf2vol --o lh_lhlgi.nii.gz --subject s${id} --so lh.white lh.pial_lgi
     mri_surf2vol --o lh_rhlgi.nii.gz --subject s${id} --so lh.white rh.pial_lgi
@@ -18,5 +18,6 @@ do
     mris_calc --output rh.nii.gz rh_lhlgi.nii.gz sub rh_rhlgi.nii.gz
     mris_calc --output ${SUBJECTS_DIR}/s${id}/interasymm_s$id.nii.gz lh.nii.gz add rh.nii.gz
     cp -rf ${SUBJECTS_DIR}/s${id}/interasymm_s$id.nii.gz ${DIR}/interasymm.nii.gz
+    fast -t 1 -n 3 -H 0.1 -I 4 -l 20.0 -o ${SUBJECTS_DIR}/s${id} ${SUBJECTS_DIR}/s${id}
     echo "s$id finished"
 done
